@@ -41,12 +41,17 @@ for url in re.findall(r'url\(([^)]+)\)', (DIST / 'assets/article.css').read_text
     assert (DIST / 'assets' / url.strip('"\'')).exists(), url
 data = json.loads((DIST / 'assets/graph-data.json').read_text())
 ids = {n['id'] for n in data['nodes']}
-assert len(ids) == len(data['nodes']) == 20
+assert len(ids) == len(data['nodes']) == 477
+assert data['provenance']['research_companies'] == 475
+assert sum(n['universe'] == 'research' for n in data['nodes']) == 475
+assert len(data['edges']) == 36111
 assert len({e['id'] for e in data['edges']}) == len(data['edges'])
 reviewed = set()
 for edge in data['edges']:
     assert edge['source'] in ids and edge['target'] in ids
     assert edge['source'] != edge['target']
+    assert edge['basis'] in {'named', 'inferred', 'filing'}
+    assert edge['type'] != 'SUPPLY_DOWN'
     if edge['status'] == 'reviewed':
         reviewed.add((edge['source'], edge['target']))
         assert edge['evidence']
@@ -60,4 +65,4 @@ for name in ['roboto-OFL.txt', 'librebaskerville-OFL.txt']:
 with ZipFile(DIST / 'assets/company-network-source.zip') as z:
     assert not any('/.git/' in p or '/.openai/' in p for p in z.namelist())
     assert 'company-network-research/.github/workflows/pages.yml' in z.namelist()
-print(f'Checked HTML references, fonts, 20 entities, {len(data["edges"])} relationships, review status, and source archive.')
+print(f'Checked HTML references, fonts, 477 entities, {len(data["edges"])} relationships, review status, and source archive.')

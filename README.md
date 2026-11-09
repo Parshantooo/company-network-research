@@ -2,7 +2,9 @@
 
 A research article and interactive historical company graph.
 
-The site presents a 20-company slice of an existing research network. Readers can inspect relationship types, distinguish profile assertions from reviewed filing links, and trace a demand or supply scenario through one or two hops. The page is designed as a research article with an embedded working figure, rather than an application dashboard.
+Explore 477 historical companies directly in the browser: the saved 475-company research universe plus two counterparties from the filing pilot. The full network opens first, with company search, pan and zoom, sector filters, a neighborhood view, evidence inspection and directional path tracing. No download or account is needed.
+
+The export contains 36,111 unique typed relationships from 67,184 original rows. Named profile assertions and filing records are shown by default. A separate filter includes inferred candidates generated from shared business tags. These are research hypotheses, not verified commercial relationships.
 
 ## Run locally
 
@@ -48,7 +50,7 @@ dist/
   assets/
     article.css           Self-hosted typography and responsive layout
     explorer.js           Graph filtering, evidence inspection, and tracing
-    graph-data.json       Curated historical relationship records
+    graph-data.json       477 companies and 36,111 historical relationships
     fonts/                Roboto, Libre Baskerville, and OFL licenses
 scripts/
   check_site.py           Data integrity and static-link checks
@@ -64,24 +66,32 @@ scripts/
 - Filter all assertions, records with filing evidence, or reviewed links only.
 - Follow customer-demand paths toward suppliers or supplier-disruption paths toward customers.
 - Inspect disclosure dates and open SEC source filings.
-- Use neighborhood mode, keyboard node selection, and CSV export.
+- Use full-network and neighborhood views, pan, zoom, sector filters, accessible company selection, and optional CSV export.
 - Copy the page URL to preserve graph settings in the URL fragment.
 
 All interactions run in the browser. There are no analytics, accounts, or external application requests. The only application fetch is the same-origin static graph JSON.
 
 ## Research boundaries
 
-The data snapshot is October 20, 2026. The article design is November 9, 2026. This is a historical research graph, not a current supplier database or a return forecast.
+The data snapshot is October 20, 2026. The interface was updated November 9, 2026. The site is interactive but the dataset does not update automatically. This is a historical research graph, not a current supplier database or a return forecast.
 
 Most edges are retrospectively authored profile assertions intended to describe 2010-era structure. The Apple/Intel filing mentions remain candidates for a direct purchasing relationship. Two distinct parent-level pairs in the Delta regional-capacity pilot are locally reviewed. That small rule-development sample does not establish generalization.
 
 Scenario tracing is unweighted breadth-first reachability, not a causal model or an exposure calculation. Dates record disclosures rather than contract inception. See the source notes for the full provenance and limits.
 
-## Design reference and font rights
+## Typography and font rights
 
-The layout follows the editorial structure of [Optiver's research blog](https://www.optiver.com/insights/technology-blog/machine-learning-in-trading-an-adversarial-research-problem/): serif headline, restrained metadata, introduction, feature illustration, section navigation, and readable article column. The page uses project-specific text and illustrations; it is not affiliated with Optiver.
+Roboto and Libre Baskerville are self-hosted with their SIL Open Font License texts. No remote fonts are requested.
 
-The inspected reference uses Roboto body text and Century Expanded LT Std headlines. This project self-hosts open-source Roboto and Libre Baskerville. Headline CSS uses a locally installed Century font when available and otherwise the bundled Libre Baskerville fallback. Optiver's commercial headline files, custom Opticode, branding, article copy, and imagery are not included. Font license texts ship with the project.
+## Rebuild the data
+
+The ready-to-use JSON is included. To regenerate it from the original research workspace:
+
+```sh
+python3 scripts/build_graph.py --workspace /path/to/research-workspace
+```
+
+The builder reads `stock_graph/profiles_ext.py` and `stock_graph/results/options_graph_5y/analysis_edges.csv`, removes reverse supply rows, deduplicates symmetric relationships, and retains the filing-pilot records already in the JSON. It does not read price panels or option quotes. See the source notes for evidence limitations.
 
 ## Checks
 
